@@ -20,7 +20,7 @@ $$
 \psi(x+a) = e^{iqa}\,\psi(x)
 $$
 
-for a constant $q$. Reason: the translation by $a$ commutes with $\hat H$, so $\hat H$ and the translation operator have simultaneous eigenstates, and the eigenvalue has modulus 1. The proof is in Griffiths Ch. 6.
+for a constant $q$. Reason: the translation by $a$ commutes with $\hat H$, so $\hat H$ and the translation operator have simultaneous eigenstates, and the eigenvalue has modulus 1. The proof is in Griffiths Ch. 6 ([[translation-operator-and-translational-symmetry]]).
 
 **Consequence.** $|\psi|^2$ is periodic even though $\psi$ is not. Only one cell needs to be solved: the Bloch condition generates the solution everywhere.
 
