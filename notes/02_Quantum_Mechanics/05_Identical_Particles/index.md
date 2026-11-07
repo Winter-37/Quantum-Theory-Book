@@ -1,0 +1,1 @@
+Two-particle systems, then the symmetrization principle and the exchange "force". Helium and the periodic table are the first many-electron problems. The free electron gas and band structure close the chapter (Griffiths Ch. 5). This is the bridge to Slater determinants in Part 4.

@@ -320,13 +320,8 @@ def build():
 
         prereq = refs(["prerequisites", "prerequisite", "prereq"])
         related = refs(["related"])
-        also = []
-        for a in as_list(meta.get("also")):
-            a = a.strip().strip("/")
-            if a and a != r["key"]:
-                if a not in known:
-                    add_folder(a, f"'also' in {r['path'].as_posix()}")
-                also.append(a)
+        if as_list(meta.get("also")):
+            warnings.append(f"{r['path'].as_posix()}: 'also:' is no longer supported (each note has one home); ignored")
         cite = {k: as_str(meta.get(k)) for k in ("authors", "journal", "year", "doi") if as_str(meta.get(k))}
         for ref in sorted(unresolved):
             unresolved_all.setdefault(ref, []).append(r["id"])
@@ -336,7 +331,7 @@ def build():
             "level": slug(as_str(meta.get("level"))), "kind": slug(as_str(meta.get("kind"))),
             "tags": [t for t in as_list(meta.get("tags")) if t],
             "prereq": prereq, "related": related, "links": sorted(links - {r["id"]}),
-            "home": r["key"], "also": also, "order": r["order"], "cite": cite,
+            "home": r["key"], "order": r["order"], "cite": cite,
             "mins": max(1, round(plain_words(htm) / WORDS_PER_MIN)), "html": htm,
         })
 

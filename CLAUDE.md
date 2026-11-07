@@ -40,8 +40,8 @@ Dependencies: Python 3.8+ and `pip install markdown` (build only). Viewing needs
 ```bash
 python3 build.py                      # build once; prints counts, warnings, unwritten links
 python3 build.py --watch              # rebuild on any change to notes/, tree.txt, src/page.html
-python3 new_note.py RHF "Title"       # folder = full tree path or unique last segment
-python3 new_note.py Research_Papers "Short title" --kind paper
+python3 new_note.py 03_Hartree_Fock_Theory "Title"   # folder = full tree path or unique last segment
+python3 new_note.py 03_Research_Papers "Short title" --kind paper
 ```
 
 Always run `python3 build.py` after any change and read its output. It must finish without
@@ -56,7 +56,7 @@ errors; warnings need a reason to remain (see section 11).
    directory, take title/id, collect everything. Skipped: any file or folder whose name starts with
    `.` or `_` (use `_draft.md` for drafts). `index.md` is the folder introduction, not a note.
 3. Pass 2 renders each body: Markdown to HTML with math protected (section 7), resolves `[[links]]`,
-   rewrites relative image/file paths, and resolves `prerequisites`, `related` and `also`.
+   rewrites relative image/file paths, and resolves `prerequisites` and `related`.
 4. Writes one JSON blob (`folders`, `notes`, `intros`) into `src/page.html` at `__SITE_DATA__`.
    All `<` in the JSON are written as `<`, so note content cannot break out of the script tag.
 5. The page's JavaScript builds the sidebar tree, folder pages, note pages, search and the home
@@ -64,41 +64,77 @@ errors; warnings need a reason to remain (see section 11).
    data is embedded.
 
 JSON note fields: `id, title, summary, date, status, level, kind, tags[], prereq[], related[],
-links[], home, also[], order, cite{authors,journal,year,doi}, mins, html`.
+links[], home, order, cite{authors,journal,year,doi}, mins, html`.
 `prereq`/`related` hold note ids, or the raw text of a note that does not exist yet ("planned").
 
-## 5. The folder tree
+## 5. The book structure (parts, chapters, sections)
 
-`tree.txt` is authoritative for folder structure and order. It currently has 10 top-level sections:
+The notebook reads like a textbook. `tree.txt` is authoritative and has exactly **two levels**:
 
-```
-00_Mathematics                      05_Quantum_Computing
-01_Classical_Physics                06_Quantum_Computational_Chemistry
-02_Quantum_Mechanics                07_Computational_Methods
-03_Quantum_Chemistry                08_Research_and_Literature
-04_Electronic_Structure_Theory      09_Reference_Material
-```
+- **Parts:** the 10 top-level folders, `00`-`09` (Mathematics, Classical Physics, Quantum Mechanics,
+  Quantum Chemistry, Electronic Structure Theory, Quantum Computing, Quantum Computational Chemistry,
+  Computational Methods, Research and Literature, Reference Material).
+- **Chapters:** the folders inside a part.
+- **Sections:** the notes inside a chapter. Do not add a third folder level; a subtopic is a
+  section (note), not a folder.
 
-`04_Electronic_Structure_Theory` (the owner's main area) has 17 children, `00`–`16`: Foundations of
-Quantum Chemistry; Mathematical and Computational Foundations; Basis Sets and Orbital Theory;
-Mean Field Theories; Electron Correlation and Wavefunction Methods; Multireference Electronic
-Structure; Reduced Density Matrices; Analytical Derivatives and Response Theory; Electronic and
-Molecular Properties; Excited State and Nonadiabatic Theory; Quantum Embedding; Quantum Algorithms;
-Stochastic and Tensor Network Methods; Integral and Algorithmic Techniques; Software and
-Implementations; Benchmarking and Validation; Applications and Literature.
-Embedding and Quantum Algorithms are deliberately separate folders (10 and 11).
+**Numbering and reading order.**
 
-`09_Reference_Material` holds notation, units and constants, mathematical identities, and
-convention comparisons (for example chemist vs physicist integral notation, RDM normalisations).
+- The page numbers Part 4, Chapter 4.3, Section 4.3.5 from the folder prefixes and each note's
+  `order` field.
+- It builds one global reading order: depth-first through the tree, and inside a chapter by
+  `order`, then title.
+- Every note has Previous/Next buttons along that order, crossing chapter boundaries. Chapter pages
+  have previous/next chapter buttons.
+- The sidebar is a table of contents that lists a chapter's sections when expanded.
+
+**Chapter introductions.** Every chapter has `index.md`. It gives the chapter's purpose, a **Path**
+through its sections in order, what it **Needs** (earlier chapters) and what it **Leads to**, and a
+**Planned sections:** line. When you add, remove or reorder notes in a chapter, update its intro.
+
+**Main part.** `04_Electronic_Structure_Theory` has 22 chapters:
+
+1. The electronic problem.
+2. Many-electron wave functions.
+3. Hartree-Fock.
+4. Basis sets and integrals.
+5. Second quantization and spin.
+6. RDMs.
+7. Orbital optimization and SCF stability.
+8. DFT (planned).
+9. Correlation and CI.
+10. MBPT.
+11. Coupled cluster.
+12. Beyond CCSD.
+13. Multiconfigurational methods.
+14. Comparing and calibrating methods.
+15. Analytic energy derivatives.
+16. Molecular properties and PES.
+17. Green's functions and propagators.
+18. Excited states (planned).
+19. Embedding (planned).
+20. Stochastic and tensor-network methods (planned).
+21. Software (planned).
+22. Applications (planned).
+
+Quantum algorithms live in Part 6. Empty planned chapters are kept and shown.
+
+**Placing a new note.**
+
+- Choose the chapter where a reader following the book first needs it.
+- Set `order` so that its prerequisites come earlier in the reading order (steps of 10; the
+  template's 999 appends at the end).
+- If a note needs something from a later chapter, prefer moving one of the two over leaving a
+  forward prerequisite.
 
 Rules:
-- Leading digits (`04_`) become the displayed folder number and fix the order. Unnumbered names
+- Leading digits (`04_`) become the displayed number and fix the order. Unnumbered names
   keep the order written in `tree.txt`, not alphabetical.
 - Display names come from folder names: `_` becomes a space, the number prefix is stripped, and a
   small `FIX` list in `src/page.html` improves a few (Schrodinger to Schrödinger, `Hartree Fock` to
   Hartree–Fock, `CCSD T` to CCSD(T), and so on). Add entries there when a name displays badly.
-- The owner may flatten folders (for example, Basis Sets and Orbital Theory is intended to hold only
-  notes, no subfolders). Do it by deleting the child lines from `tree.txt` and rebuilding.
+- Inserting a chapter in the middle of a part means renumbering the later chapter folders (rename
+  the directories too). Ask the owner first.
 - Folder names must contain only letters, digits and underscores (they are used in URL hashes).
 - Git does not track empty directories; `build.py` recreates them from `tree.txt`.
 
@@ -123,8 +159,7 @@ level: intermediate        # introductory | intermediate | advanced
 tags: [SCF, mean field]
 prerequisites: [variational-principle, second-quantization]
 related: [uhf]
-also: [03_Quantum_Chemistry/04_Molecular_Orbital_Theory]
-order: 1                   # optional; default alphabetical by title
+order: 50                  # position in the chapter (steps of 10); default alphabetical by title
 date: 2026-10-31
 ---
 ```
@@ -150,14 +185,14 @@ date: 2026-10-31
 - A reference to a note that does not exist is not an error: it renders greyed out as "planned" and
   `build.py` lists it. When the note is later created, matching ids/titles turn into real links.
 
-### Notes in two folders
+### One note, one place
 
-One note has one home (its directory). `also: [folder/path, ...]` lists it in other folders too, shown
-there as "Shortcut" with its home path. No duplicated content. Use it sparingly: if a note is only
-*connected* to another area, use `related` or `[[ ]]`. Choose the home by the most specific
-fitting folder. When a subject recurs in several top-level sections of the tree (VQE, embedding,
-potential energy surfaces, symmetry), split by role (theory in one home, software details in the
-software folder) and link them. Never copy a note into two files.
+Each note lives in exactly one chapter (its directory). There are no shortcuts: the owner found
+notes listed in several folders confusing, and the `also:` field was removed (`build.py` warns and
+ignores it). Connect chapters with `prerequisites`, `related` and `[[ ]]` links. When a subject
+recurs in several parts (VQE, embedding, potential energy surfaces, symmetry), split by role (theory
+in one chapter, software details in the software chapter) and link them. Never copy a note into
+two files.
 
 ## 7. Markdown and math rules (build.py `Renderer`)
 
@@ -188,10 +223,14 @@ accent; light/dark by tokens defined on `:root` with a `data-theme` override. Fo
 the CSS variables at the top. The masthead says "Theory Notebook", the home title is `SITE` in the
 script ("Scientific Knowledge").
 
-Structure of the script: build the tree from `DATA.folders`; attach notes (`n.node` home,
-`n.alsoNodes` shortcuts); compute counts and reverse links; routes `resolve()/go()/setRoute()`; draw
+Structure of the script: build the tree from `DATA.folders` (each node gets `full`, the dotted
+number such as `4.3`, and `depth`: 1 part, 2 chapter); attach notes (`n.node`); `collect()` builds the
+global `reading` array, `n.sec` (section number such as `4.3.5`), `n.seq`, and `foldersAt[depth]`;
+compute reverse links; routes `resolve()/go()/setRoute()`; draw
 functions `drawHome`, `drawFolder`, `drawNote`, `drawKind`, `drawResults`; sidebar with collapsible tree
-and a phone drawer; search (case-insensitive, all words must appear, over title, summary, tags, kind,
+that also lists each chapter's sections, and a phone drawer; reading-order pagers (`pager()`, top
+and bottom of each note; chapter pagers on folder pages); "Continue" link from the last-read note
+(localStorage `theory-notebook-last`, wrapped in try/catch); search (case-insensitive, all words must appear, over title, summary, tags, kind,
 full text and folder names; no ranking); theme toggle (localStorage, wrapped in try/catch).
 
 Constraints when editing the page:
@@ -209,11 +248,11 @@ Constraints when editing the page:
 
 | Task | Steps |
 |---|---|
-| Add a note | `new_note.py`, write content, `build.py`. Set `summary`, `kind`, `status`, `prerequisites`. |
-| Add a folder | Add a line in `tree.txt` at the right indent and position; `build.py`. |
-| Flatten or delete folders | Delete the lines in `tree.txt`. First move any notes up; fix `also:` entries that name the removed folders. Remove leftover empty dirs with `rmdir`. |
-| Rename a folder | Change it in `tree.txt` and rename the directory under `notes/` (use `git mv`). Update `also:` entries naming it. |
-| Move a note | Move the file to the new directory. Its id and links are unaffected. |
+| Add a note | `new_note.py <chapter> "Title"`, write content, set `order` (position in the chapter), `summary`, `kind`, `status`, `prerequisites`; update the chapter's `index.md` Path; `build.py`. |
+| Add a chapter | Add a line in `tree.txt` under its part (two levels only), write its `index.md`; `build.py`. |
+| Delete a chapter | Delete the line in `tree.txt`. First move its notes to another chapter. Remove leftover empty dirs with `rmdir`. |
+| Rename a chapter | Change it in `tree.txt` and rename the directory under `notes/` (use `git mv`). |
+| Move a note | Move the file to the new chapter directory and give it a new `order`; update both chapters' intros. Its id and links are unaffected. |
 | Rename a note id | Avoid. If required: update the `id`, then grep all notes for the old id in `prerequisites`, `related`, `[[...]]`, and `#n.` links. |
 | Add a `kind` or `status` value | Kinds are open-ended (any slug works; add a display name in `KIND`/`KINDS` in the page script). Statuses are fixed in `STATUSES` (build.py) and `STATUS` (page). |
 | Change look and feel | Edit tokens and CSS in `src/page.html`, rebuild, check light, dark and phone widths. |
@@ -247,7 +286,7 @@ These matter more than any code. The notes are a reference the owner will trust.
 2. Its warnings are understood. Expected: "linked note(s) not written yet" for planned links.
    Not acceptable: duplicate ids, folders missing from `tree.txt` (unless intentional), unknown status.
 3. Open `index.html` in a browser (or a headless one) and check the affected pages: equations
-   typeset, no console errors, links resolve, shortcut/also lists correct, and the sidebar counts are right.
+   typeset, no console errors, links resolve, section numbers and Previous/Next follow the intended order, and the sidebar counts are right.
 4. For page changes also check dark mode and a 390 px wide viewport.
 5. If Playwright is available, a useful smoke test: load `file:///.../index.html` with all network
    requests aborted, open a note, and assert `mjx-container` elements exist, there are no page errors,
@@ -273,8 +312,7 @@ virtual environments. When folders are renamed, use `git mv` so history follows.
 
 ## 14. Things to ask the owner before doing
 
-- Changing the top-level sections or renumbering existing folders (notes link by folder path in
-  `also:`, and numbers are part of the owner's mental map).
+- Changing the parts, or inserting/renumbering chapters (numbers are part of the owner's mental map).
 - Deleting any note, or restructuring existing notes in bulk.
 - Adding dependencies, a server, a database, or any network access at runtime.
 - Adding features the owner has declined (section 1).

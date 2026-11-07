@@ -21,9 +21,8 @@ tags: []
 prerequisites: []
 # Connected topics that are not prerequisites.
 related: []
-# Other folders that should also list this note (see README, "Notes that belong in two folders").
-# Use full folder paths from tree.txt. Leave empty unless the note really spans two areas.
-also: []
+# Position inside the chapter (sections are numbered in this order). Use steps of 10 so you can insert later.
+order: 999
 date: {{date}}
 ---
 

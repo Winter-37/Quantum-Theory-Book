@@ -119,9 +119,10 @@ li:not(.collapsed)>.row>.tg::before{transform:rotate(45deg)}
 .items{list-style:none;margin:0;padding:0}
 .items li{border-top:1px solid var(--line)}
 .items li:last-child{border-bottom:1px solid var(--line)}
-.item{display:grid;grid-template-columns:48px minmax(0,1fr);gap:4px 14px;padding:14px 0;color:inherit;text-decoration:none}
+.item{display:grid;grid-template-columns:minmax(48px,max-content) minmax(0,1fr);gap:4px 14px;padding:14px 0;color:inherit;text-decoration:none}
 .item.nonum,.item.note{grid-template-columns:minmax(0,1fr)}
 .item.note{padding:18px 0}
+.item.note.numd{grid-template-columns:minmax(48px,max-content) minmax(0,1fr)}
 .item .no{font-family:var(--display);font-weight:500;font-size:1.3rem;line-height:1.25;color:var(--muted);font-variant-numeric:tabular-nums}
 .item .t{display:block;font-family:var(--display);font-weight:600;font-size:1.2rem;line-height:1.25;text-wrap:balance}
 .item .s{display:block;max-width:58ch;font-size:.95rem;margin-top:3px}
@@ -145,10 +146,16 @@ li:not(.collapsed)>.row>.tg::before{transform:rotate(45deg)}
 .post-body{min-width:0;max-width:690px}
 /* paragraphs scroll sideways only if a long inline formula cannot fit; padding keeps sub/superscripts from clipping */
 .post-body p,.post-body li{overflow-x:auto;overflow-y:hidden;padding-block:.3em}
+.post-body ol,.post-body ul{list-style:none}
+.post-body ol{counter-reset:li}
+.post-body ol>li{counter-increment:li}
+.post-body ol>li,.post-body ul>li{position:relative;padding-left:1.5em}
+.post-body ol>li::before{content:counter(li) ".";position:absolute;left:0;top:.3em;color:var(--accent);font-variant-numeric:tabular-nums}
+.post-body ul>li::before{content:"\2022";position:absolute;left:.35em;top:.3em;color:var(--accent)}
 .post-body p{margin:-.3em 0 .75em}
 .post-body h2{font-family:var(--display);font-weight:600;font-size:1.55rem;line-height:1.2;margin:2.1em 0 .6em;text-wrap:balance;scroll-margin-top:16px}
 .post-body h3{font-family:var(--display);font-weight:600;font-size:1.2rem;margin:0 0 .6em}
-.post-body ul,.post-body ol{margin:0 0 1.1em;padding-left:1.4em}
+.post-body ul,.post-body ol{margin:0 0 1.1em;padding-left:0}
 .post-body li{margin:-.3em 0 .15em}
 .post-body li::marker{color:var(--accent)}
 .post-body code{font-family:var(--mono);font-size:.86em;background:var(--code);padding:1px 5px}
@@ -180,10 +187,14 @@ td.n,th.n{text-align:right;padding-right:18px;white-space:nowrap}
   .rail li a:hover{color:var(--accent-ink)}
 }
 @media (max-width:520px){
-  .item{grid-template-columns:40px minmax(0,1fr);gap:4px 10px}
+  .item{grid-template-columns:minmax(40px,max-content) minmax(0,1fr);gap:4px 10px}
   .item.nonum,.item.note{grid-template-columns:minmax(0,1fr)}
+  .item.note.numd{grid-template-columns:minmax(40px,max-content) minmax(0,1fr)}
   .pager{grid-template-columns:1fr}
   .pager .next{grid-column:1}
+  .pager.top{grid-template-columns:1fr 1fr;gap:8px}
+  .pager.top .next{grid-column:2}
+  .pager.top .nt{font-size:.82rem}
 }
 
 /* ---- additions: Markdown content, cross-links, dashboard ---- */
@@ -220,13 +231,26 @@ hr{border:0;border-top:1px solid var(--line);margin:2em 0}
 .xrefs .planned{font-family:var(--display);font-weight:500;font-size:1.05rem}
 .xrefs .m{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
 
-.item .m .sc{color:var(--accent-ink)}
+.tree .secs{margin-left:30px;border-left:1px dotted var(--line)}
+.nl.sl{font-family:var(--serif);font-weight:400;font-size:.84rem;padding:3px 6px;color:var(--muted)}
+.nl.sl .nn{font-size:.62rem}
+.nl.sl.cur{color:var(--accent-ink);font-weight:600}
+.nl.nl-empty .nt{color:var(--muted);font-weight:500}
+.eyebrow a{color:inherit;text-decoration:none}
+.eyebrow a:hover{text-decoration:underline}
+.pager.top{margin:0 0 26px;grid-template-columns:1fr 1fr}
+.pager.top button{padding:8px 12px}
+.pager.top .nt{font-size:.92rem}
+.pager .ch{display:block;margin-top:3px;font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 0}
+.cta .chip{font-size:.8rem;padding:9px 14px}
+.cta .chip.primary{border-color:var(--accent);color:var(--accent-ink)}
 .stats{margin:0;font-family:var(--mono);font-size:.78rem;color:var(--muted)}
 .head.home{margin-top:24px}
 .group.wide{max-width:none}
 .grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:0 40px}
 .grid li{border-top:1px solid var(--line)}
-.sec{display:grid;grid-template-columns:44px minmax(0,1fr);gap:2px 12px;padding:16px 0 20px;color:inherit;text-decoration:none}
+.sec{display:grid;grid-template-columns:minmax(44px,max-content) minmax(0,1fr);gap:2px 12px;padding:16px 0 20px;color:inherit;text-decoration:none}
 .sec .no{font-family:var(--display);font-weight:500;font-size:1.3rem;line-height:1.25;color:var(--muted);font-variant-numeric:tabular-nums}
 .sec .t{display:block;font-family:var(--display);font-weight:600;font-size:1.2rem;line-height:1.25;text-wrap:balance}
 .sec .m{display:block;margin-top:4px;font-family:var(--mono);font-size:.72rem;color:var(--muted)}
@@ -248,18 +272,18 @@ details.add code.inline{font-family:var(--mono);font-size:.84em;background:var(-
 <div class="wrap">
   <div class="top">
     <p class="mark"><a href="#" id="home-link">Theory Notebook</a></p>
-    <button class="btn" id="menu" type="button" aria-expanded="false" aria-controls="side">Folders</button>
+    <button class="btn" id="menu" type="button" aria-expanded="false" aria-controls="side">Contents</button>
     <button class="btn" id="theme" type="button">Theme</button>
   </div>
 
   <div class="layout">
-    <nav class="side" id="side" aria-label="Folders">
-      <h2><span>Folders</span><button class="btn" id="close" type="button">Close</button></h2>
+    <nav class="side" id="side" aria-label="Contents">
+      <h2><span>Contents</span><button class="btn" id="close" type="button">Close</button></h2>
       <ul class="tree" id="tree"></ul>
     </nav>
     <main class="main">
       <div class="searchbar">
-        <input class="search" id="q" type="search" placeholder="Search notes and folders" aria-label="Search notes and folders" autocomplete="off">
+        <input class="search" id="q" type="search" placeholder="Search sections and chapters" aria-label="Search sections and chapters" autocomplete="off">
       </div>
       <div id="view" aria-live="polite"></div>
     </main>
@@ -306,7 +330,7 @@ window.MathJax={
   }
 
   /* ---------- tree and notes ---------- */
-  var rootNode={key:'',seg:'',num:'',label:SITE,children:[],notes:[],shortcuts:[],list:[],parent:null,intro:''};
+  var rootNode={key:'',seg:'',num:'',full:'',depth:0,label:SITE,children:[],notes:[],list:[],parent:null,intro:''};
   var byKey={'':rootNode},allNodes=[];
   function addPath(segs){
     var node=rootNode;
@@ -315,7 +339,10 @@ window.MathJax={
       var c=byKey[key];
       if(!c){
         var p=nameParts(seg);
-        c={key:key,seg:seg,num:p.num,label:p.label,children:[],notes:[],shortcuts:[],list:[],parent:node,intro:''};
+        var nn=p.num?String(parseInt(p.num,10)):'';
+        var full=nn?(node.full?node.full+'.'+nn:nn):'';
+        if(nn&&node.key&&!node.full)full='';
+        c={key:key,seg:seg,num:full,full:full,depth:node.depth+1,label:p.label,children:[],notes:[],list:[],parent:node,intro:''};
         node.children.push(c);byKey[key]=c;allNodes.push(c);
       }
       node=c;
@@ -327,14 +354,9 @@ window.MathJax={
   var notes=DATA.notes,noteById={},byKind={};
   notes.forEach(function(n){
     noteById[n.id]=n;
-    n.tags=n.tags||[];n.prereq=n.prereq||[];n.related=n.related||[];n.links=n.links||[];n.also=n.also||[];n.cite=n.cite||{};
+    n.tags=n.tags||[];n.prereq=n.prereq||[];n.related=n.related||[];n.links=n.links||[];n.cite=n.cite||{};
     n.node=addPath(n.home?n.home.split('/'):[]);
     n.node.notes.push(n);
-    n.alsoNodes=[];
-    n.also.forEach(function(p){
-      var nd=addPath(p.split('/'));
-      if(nd!==n.node&&n.alsoNodes.indexOf(nd)<0){n.alsoNodes.push(nd);nd.shortcuts.push(n)}
-    });
     if(n.kind)(byKind[n.kind]=byKind[n.kind]||[]).push(n);
   });
   Object.keys(DATA.intros||{}).forEach(function(k){var nd=byKey[k];if(nd)nd.intro=DATA.intros[k]});
@@ -343,16 +365,24 @@ window.MathJax={
     var ao=a.order==null?1e9:a.order,bo=b.order==null?1e9:b.order;
     return ao-bo||a.title.localeCompare(b.title);
   }
+  /* reading order: depth-first through the tree, notes of a folder before its subfolders */
+  var reading=[],foldersAt={};
   function collect(node){
-    var ids={};
     node.notes.sort(byOrder);
-    node.list=node.notes.concat(node.shortcuts).sort(byOrder);
-    node.list.forEach(function(n){ids[n.id]=1});
-    node.children.forEach(function(c){Object.keys(collect(c)).forEach(function(k){ids[k]=1})});
-    node.count=Object.keys(ids).length;
-    return ids;
+    node.list=node.notes;
+    node.first=reading.length;
+    node.notes.forEach(function(n,i){
+      n.sec=node.full?node.full+'.'+(i+1):'';
+      n.seq=reading.length;reading.push(n);
+    });
+    if(node.key)(foldersAt[node.depth]=foldersAt[node.depth]||[]).push(node);
+    node.children.forEach(collect);
+    node.count=reading.length-node.first;
+    node.start=node.count?reading[node.first]:null;
   }
   collect(rootNode);
+  function levelName(node){return node.depth===1?'Part':(node.depth===2?'Chapter':'Section')}
+  function chapterOf(n){return n.node}
 
   /* reverse links */
   var requiredBy={},mentionedIn={};
@@ -398,13 +428,14 @@ window.MathJax={
   });
 
   /* ---------- sidebar ---------- */
-  var liByKey={},linkByKey={};
+  var liByKey={},linkByKey={},linkByNote={};
   function buildTree(node,ul){
     node.children.forEach(function(c){
       var li=el('li');liByKey[c.key]=li;
       var row=el('div','row');
       var tg;
-      if(c.children.length){
+      var hasSub=c.children.length||c.notes.length;
+      if(hasSub){
         tg=el('button','tg');tg.type='button';
         tg.setAttribute('aria-label','Expand or collapse '+c.label);
         tg.setAttribute('aria-expanded','false');
@@ -413,14 +444,25 @@ window.MathJax={
           tg.setAttribute('aria-expanded',String(!closed));
         });
       }else{tg=el('span','tg none')}
-      var a=el('a','nl');a.href='#'+hashFor(c.key);linkByKey[c.key]=a;
+      var a=el('a','nl'+(c.count?'':' nl-empty'));a.href='#'+hashFor(c.key);linkByKey[c.key]=a;
       if(c.num)a.appendChild(el('span','nn',c.num));
       a.appendChild(el('span','nt',c.label));
       if(c.count)a.appendChild(el('span','ct',String(c.count)));
       a.addEventListener('click',function(e){if(plain(e)){e.preventDefault();go(hashFor(c.key))}});
       row.appendChild(tg);row.appendChild(a);li.appendChild(row);
-      if(c.children.length){
-        var sub=el('ul');buildTree(c,sub);li.appendChild(sub);li.classList.add('collapsed');
+      if(hasSub){
+        var sub=el('ul');
+        if(c.notes.length){
+          sub.className='secs';
+          c.notes.forEach(function(n){
+            var sl=el('li'),sa=el('a','nl sl');sa.href='#n.'+n.id;linkByNote[n.id]=sa;
+            if(n.sec)sa.appendChild(el('span','nn',n.sec));
+            sa.appendChild(el('span','nt',n.title.replace(/\s+-\s+.*$/,'')));
+            sa.addEventListener('click',function(e){if(plain(e)){e.preventDefault();go('n.'+n.id)}});
+            sl.appendChild(sa);sub.appendChild(sl);
+          });
+        }
+        buildTree(c,sub);li.appendChild(sub);li.classList.add('collapsed');
       }
       ul.appendChild(li);
     });
@@ -437,9 +479,9 @@ window.MathJax={
     if(lastCur){lastCur.classList.remove('cur');lastCur.removeAttribute('aria-current')}
     lastCur=null;
     if(!node||!node.key)return;
-    var isFolder=resolve(state.h).kind==='folder';
-    for(var n=node;n&&n.key;n=n.parent){if(n!==node||n.children.length)openLi(liByKey[n.key])}
-    var a=linkByKey[node.key];
+    var rr=resolve(state.h),isFolder=rr.kind==='folder';
+    for(var n=node;n&&n.key;n=n.parent){if(n!==node||n.children.length||!isFolder)openLi(liByKey[n.key])}
+    var a=(!isFolder&&rr.kind==='note'&&linkByNote[rr.note.id])||linkByKey[node.key];
     a.classList.add('cur');
     if(isFolder)a.setAttribute('aria-current','page');
     lastCur=a;
@@ -471,7 +513,7 @@ window.MathJax={
     for(var n=node;n;n=n.parent)chain.unshift(n);
     chain.forEach(function(n,i){
       if(i)c.appendChild(el('span','sep','/'));
-      var text=n.key?(n.num?n.num+' ':'')+n.label:SITE;
+      var text=n.key?(n.full?n.full+' ':'')+n.label:SITE;
       if(i===chain.length-1&&!tail){var s=el('span',null,text);s.setAttribute('aria-current','page');c.appendChild(s)}
       else c.appendChild(link(text,hashFor(n.key)));
     });
@@ -484,28 +526,33 @@ window.MathJax={
     var b=el('span');
     b.appendChild(el('span','t',c.label));
     var bits=[];
-    if(c.children.length)bits.push(plural(c.children.length,'folder'));
-    if(c.count)bits.push(plural(c.count,'note'));
-    if(bits.length)b.appendChild(el('span','m',bits.join(' · ')));
+    if(c.children.length)bits.push(plural(c.children.length,c.depth===1?'chapter':'folder'));
+    bits.push(c.count?plural(c.count,c.depth>=2?'section':'note'):'planned');
+    b.appendChild(el('span','m',bits.join(' · ')));
+    if(c.depth===2&&c.notes.length&&!c.children.length){
+      b.appendChild(el('span','s',c.notes.map(function(n){return n.title.replace(/\s+-\s+.*$/,'')}).join(' · ')));
+    }
     a.appendChild(b);
     a.addEventListener('click',function(e){if(plain(e)){e.preventDefault();go(hashFor(c.key))}});
     return a;
   }
   function noteItem(n,here,showPath){
-    var a=el('a','item note');a.href='#n.'+n.id;
-    a.appendChild(el('span','t',n.title));
-    if(n.summary)a.appendChild(el('span','s',n.summary));
+    var numd=here&&n.sec;
+    var a=el('a','item note'+(numd?' numd':''));a.href='#n.'+n.id;
+    if(numd)a.appendChild(el('span','no',n.sec));
+    var tb=numd?el('span'):a;
+    if(numd)a.appendChild(tb);
+    tb.appendChild(el('span','t',n.title));
+    if(n.summary)tb.appendChild(el('span','s',n.summary));
     var m=el('span','m');
-    var shortcut=here&&n.node!==here;
     var bits=[];
-    if(shortcut){m.appendChild(el('span','sc','Shortcut'));bits.push('lives in '+pathLabel(n.node))}
-    else if(showPath)bits.push(pathLabel(n.node));
+    if(showPath)bits.push((n.sec?n.sec+' · ':'')+pathLabel(n.node));
     if(n.kind)bits.push(kindName(n.kind));
     if(n.status)bits.push(STATUS[n.status]||n.status);
     if(n.date)bits.push(fmtDate(n.date));
     bits.push(n.mins+' min read');
-    m.appendChild(document.createTextNode((shortcut?' · ':'')+bits.join(' · ')));
-    a.appendChild(m);
+    m.appendChild(document.createTextNode(bits.join(' · ')));
+    tb.appendChild(m);
     a.addEventListener('click',function(e){if(plain(e)){e.preventDefault();go('n.'+n.id)}});
     return a;
   }
@@ -535,12 +582,42 @@ window.MathJax={
     if(pendingMath){var t=pendingMath;pendingMath=null;typeset(t)}
   });
 
+  /* ---------- reading-order pager ---------- */
+  function pagerBtn(target,cls,dir,cur,top){
+    var b=el('button',cls);b.type='button';
+    var cross=cur&&target.node!==cur.node;
+    var lab=dir;
+    if(cross)lab=cls==='next'?(top?'Next chapter →':'Next chapter →'):(top?'← Previous chapter':'← Previous chapter');
+    b.appendChild(el('span','dir',lab));
+    b.appendChild(el('span','nt',(target.sec?target.sec+'  ':'')+target.title.replace(/\s+-\s+.*$/,'')));
+    if(cross)b.appendChild(el('span','ch',(target.node.full?target.node.full+' ':'')+target.node.label));
+    b.addEventListener('click',function(){go('n.'+target.id)});
+    return b;
+  }
+  function pager(n,top){
+    var p=reading[n.seq-1],q=reading[n.seq+1];
+    if(!p&&!q)return null;
+    var nav=el('nav','pager'+(top?' top':''));nav.setAttribute('aria-label','Reading order');
+    if(p)nav.appendChild(pagerBtn(p,'prev',top?'← Previous':'← Previous',n,top));
+    if(q)nav.appendChild(pagerBtn(q,'next',top?'Next →':'Next →',n,top));
+    return nav;
+  }
+  function remember(n){try{localStorage.setItem('theory-notebook-last',n.id)}catch(e){}}
+  function lastRead(){try{var id=localStorage.getItem('theory-notebook-last');return id&&noteById[id]?noteById[id]:null}catch(e){return null}}
+
   /* ---------- home dashboard ---------- */
   function drawHome(v){
     var head=el('header','head home');
     head.appendChild(el('h1',null,SITE));
-    head.appendChild(el('p','lede','Personal reference notes, filed by subject. Choose a section below, use the folder tree, or search.'));
-    head.appendChild(el('p','stats',plural(notes.length,'note')+' · '+plural(allNodes.length,'folder')+' · '+plural(rootNode.children.length,'section')));
+    head.appendChild(el('p','lede','A notebook arranged like a book: parts, then chapters, then numbered sections. Read in order with the Previous and Next buttons at the end of each section, or jump to any part.'));
+    head.appendChild(el('p','stats',plural(notes.length,'section')+' · '+plural((foldersAt[2]||[]).length,'chapter')+' · '+plural(rootNode.children.length,'part')));
+    var cta=el('div','cta');
+    if(reading.length)cta.appendChild(link('Start at the beginning: '+(reading[0].sec?reading[0].sec+' ':'')+reading[0].title.replace(/\s+-\s+.*$/,''),'n.'+reading[0].id,'chip primary'));
+    var est=rootNode.children.filter(function(c){return /Electronic_Structure/.test(c.seg)})[0];
+    if(est&&est.start)cta.appendChild(link('Start Part '+est.full+': '+est.label,'n.'+est.start.id,'chip'));
+    var last=lastRead();
+    if(last)cta.appendChild(link('Continue: '+(last.sec?last.sec+' ':'')+last.title.replace(/\s+-\s+.*$/,''),'n.'+last.id,'chip'));
+    head.appendChild(cta);
     v.appendChild(head);
 
     if(!notes.length){
@@ -552,22 +629,24 @@ window.MathJax={
     var ul=el('ul','grid');
     rootNode.children.forEach(function(c){
       var a=el('a','sec');a.href='#'+hashFor(c.key);
-      a.appendChild(el('span','no',c.num||''));
+      a.appendChild(el('span','no',c.full||''));
       var b=el('span');
       b.appendChild(el('span','t',c.label));
       var bits=[];
-      if(c.children.length)bits.push(plural(c.children.length,'folder'));
-      bits.push(plural(c.count,'note'));
+      if(c.children.length)bits.push(plural(c.children.length,'chapter'));
+      bits.push(c.count?plural(c.count,'section'):'planned');
       b.appendChild(el('span','m',bits.join(' · ')));
       if(c.children.length){
-        var pv=c.children.slice(0,4).map(function(x){return x.label}).join(' · ')+(c.children.length>4?' · …':'');
+        var filled=c.children.filter(function(x){return x.count});
+        var shown=(filled.length?filled:c.children);
+        var pv=shown.slice(0,5).map(function(x){return x.full+' '+x.label}).join(' · ')+(shown.length>5?' · …':'');
         b.appendChild(el('span','pv',pv));
       }
       a.appendChild(b);
       a.addEventListener('click',function(ev){if(plain(ev)){ev.preventDefault();go(hashFor(c.key))}});
       ul.appendChild(li(a));
     });
-    var g=el('section','group wide');g.appendChild(el('h2',null,'Sections'));g.appendChild(ul);v.appendChild(g);
+    var g=el('section','group wide');g.appendChild(el('h2',null,'Parts'));g.appendChild(ul);v.appendChild(g);
 
     var ref=rootNode.children.filter(function(c){return /Reference_Material$/.test(c.seg)})[0];
     if(ref&&ref.children.length){
@@ -595,7 +674,7 @@ window.MathJax={
   /* ---------- folder page ---------- */
   function addNoteBlock(node,openIt){
     var d=el('details','add');if(openIt)d.open=true;
-    d.appendChild(el('summary',null,'Add a note to this folder'));
+    d.appendChild(el('summary',null,'Add a section here'));
     d.appendChild(el('p',null,'Run this in the project folder, then edit the new file and run build.py:'));
     var cmd='python3 new_note.py "'+node.key+'" "Note title"';
     var box=el('div','pathbox');
@@ -613,26 +692,46 @@ window.MathJax={
     if(!node.key){drawHome(v);return}
     v.appendChild(crumbs(node));
     var head=el('header','head');
-    head.appendChild(el('p','eyebrow',node.num?'Folder '+node.num:'Folder'));
+    head.appendChild(el('p','eyebrow',levelName(node)+(node.full?' '+node.full:'')));
     head.appendChild(el('h1',null,node.label));
     var bits=[];
-    if(node.children.length)bits.push(plural(node.children.length,'folder'));
-    bits.push(plural(node.count,'note')+(node.children.length?' in total':''));
+    if(node.children.length)bits.push(plural(node.children.length,node.depth===1?'chapter':'folder'));
+    bits.push(node.count?plural(node.count,'section')+(node.children.length?' in total':''):'no sections yet');
     head.appendChild(el('p','sub',bits.join(' · ')));
+    if(node.start){
+      var cta=el('div','cta');
+      cta.appendChild(link('Start reading: '+(node.start.sec?node.start.sec+' ':'')+node.start.title.replace(/\s+-\s+.*$/,''),'n.'+node.start.id,'chip primary'));
+      head.appendChild(cta);
+    }
     v.appendChild(head);
     if(node.intro){
       var intro=el('div','post-body intro');intro.innerHTML=node.intro;
       v.appendChild(intro);typeset(intro);
     }
-    if(node.children.length)v.appendChild(group('Folders',node.children.map(folderItem)));
-    if(node.list.length)v.appendChild(group(node.children.length?'Notes in this folder':'Notes',node.list.map(function(n){return noteItem(n,node,false)})));
+    if(node.children.length)v.appendChild(group(node.depth===1?'Chapters':'Folders',node.children.map(folderItem)));
+    if(node.list.length)v.appendChild(group('Sections',node.list.map(function(n){return noteItem(n,node,false)})));
     var empty=!node.children.length&&!node.list.length;
     if(empty){
       var e=el('div','empty');
-      e.appendChild(el('p',null,'No notes in this folder yet.'));
+      e.appendChild(el('p',null,'No sections in this '+levelName(node).toLowerCase()+' yet.'));
       v.appendChild(e);
     }
-    v.appendChild(addNoteBlock(node,empty));
+    var same=foldersAt[node.depth]||[],k=same.indexOf(node);
+    var pf=same[k-1],nf=same[k+1];
+    if(pf||nf){
+      var nav=el('nav','pager');nav.setAttribute('aria-label','Neighbouring '+levelName(node).toLowerCase()+'s');
+      [[pf,'prev','← Previous '+levelName(node).toLowerCase()],[nf,'next','Next '+levelName(node).toLowerCase()+' →']].forEach(function(t){
+        if(!t[0])return;
+        var b=el('button',t[1]);b.type='button';
+        b.appendChild(el('span','dir',t[2]));
+        b.appendChild(el('span','nt',(t[0].full?t[0].full+' ':'')+t[0].label));
+        b.appendChild(el('span','ch',t[0].count?plural(t[0].count,'section'):'planned'));
+        b.addEventListener('click',function(){go(hashFor(t[0].key))});
+        nav.appendChild(b);
+      });
+      v.appendChild(nav);
+    }
+    v.appendChild(addNoteBlock(node,false));
   }
 
   /* ---------- note page ---------- */
@@ -646,7 +745,7 @@ window.MathJax={
       var l=el('li');
       if(it.note){
         l.appendChild(link(it.note.title,'n.'+it.note.id));
-        l.appendChild(el('span','m',pathLabel(it.note.node)));
+        l.appendChild(el('span','m',(it.note.sec?it.note.sec+' · ':'')+it.note.node.label));
       }else{
         var sp=el('span','planned',it.text);sp.title='Not written yet';
         l.appendChild(sp);l.appendChild(el('span','m','planned'));
@@ -673,6 +772,10 @@ window.MathJax={
     var grid=el('div','note-grid');
     var art=el('article');
     var head=el('header','post-head');
+    var eb=el('p','eyebrow');
+    eb.appendChild(document.createTextNode(n.sec?'Section '+n.sec+' · ':''));
+    eb.appendChild(link((node.full?levelName(node)+' '+node.full+' ':'')+node.label,hashFor(node.key)));
+    head.appendChild(eb);
     head.appendChild(el('h1',null,n.title));
     var badges=el('div','badges');
     if(n.status){var b=el('span','badge s-'+n.status,STATUS[n.status]||n.status);badges.appendChild(b)}
@@ -683,16 +786,9 @@ window.MathJax={
     var meta=el('p','post-meta');
     [n.date?fmtDate(n.date):'',n.mins+' min read',n.tags.join(' / ')].filter(Boolean).forEach(function(x){meta.appendChild(el('span',null,x))});
     head.appendChild(meta);
-    if(n.alsoNodes.length){
-      var also=el('p','also');
-      also.appendChild(document.createTextNode('Also listed in: '));
-      n.alsoNodes.forEach(function(o,i){
-        if(i)also.appendChild(document.createTextNode(' · '));
-        also.appendChild(link(pathLabel(o),hashFor(o.key)));
-      });
-      head.appendChild(also);
-    }else{head.appendChild(el('p','also')).hidden=true}
     art.appendChild(head);
+    var tp=pager(n,true);if(tp)art.appendChild(tp);
+    remember(n);
 
     var pre=refBlock('Prerequisites',refItems(n.prereq),'pre');
     if(pre)art.appendChild(pre);
@@ -717,19 +813,7 @@ window.MathJax={
      refBlock('Required by',refItems(reqIds)),
      refBlock('Mentioned in',refItems(mentioned))].forEach(function(b){if(b)art.appendChild(b)});
 
-    var sib=node.notes,i=sib.indexOf(n);
-    if(sib.length>1){
-      var pager=el('nav','pager');pager.setAttribute('aria-label','Notes in this folder');
-      var pb=function(target,cls,dir){
-        var b=el('button',cls);b.type='button';
-        b.appendChild(el('span','dir',dir));b.appendChild(el('span','nt',target.title));
-        b.addEventListener('click',function(){go('n.'+target.id)});
-        return b;
-      };
-      if(i>0)pager.appendChild(pb(sib[i-1],'prev','← Previous'));
-      if(i<sib.length-1)pager.appendChild(pb(sib[i+1],'next','Next →'));
-      art.appendChild(pager);
-    }
+    var bp=pager(n,false);if(bp)art.appendChild(bp);
     grid.appendChild(art);
     var rail=el('aside','rail');rail.setAttribute('aria-label','Sections of this note');
     if(toc.children.length){rail.appendChild(el('h4',null,'In this note'));rail.appendChild(toc)}
@@ -752,7 +836,7 @@ window.MathJax={
   function drawResults(q,v){
     var words=q.toLowerCase().split(/\s+/);
     var fold=allNodes.filter(function(c){
-      var hay=(c.num+' '+pathLabel(c)).toLowerCase();
+      var hay=(c.full+' '+pathLabel(c)).toLowerCase();
       return words.every(function(w){return hay.indexOf(w)>=0});
     });
     var hits=notes.filter(function(n){

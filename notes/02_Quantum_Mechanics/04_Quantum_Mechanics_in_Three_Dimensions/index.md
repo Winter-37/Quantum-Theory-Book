@@ -1,0 +1,1 @@
+Central potentials and spherical harmonics lead to the hydrogen atom, the template for atomic orbitals. Then orbital angular momentum, spin, and the addition of angular momenta, which return as spin coupling in Part 4. Minimal coupling ends the chapter (Griffiths Ch. 4).

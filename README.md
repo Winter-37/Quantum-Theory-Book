@@ -26,25 +26,35 @@ That is only needed to build. Opening `index.html` needs nothing.
 ## Everyday use
 
 ```bash
-python3 new_note.py RHF "Restricted Hartree-Fock"   # creates the file from the template
+python3 new_note.py 03_Hartree_Fock_Theory "Restricted Hartree-Fock"   # creates the file from the template
 # edit notes/.../restricted-hartree-fock.md
 python3 build.py                                     # rebuild index.html
 python3 build.py --watch                             # or: rebuild automatically on every save
 ```
 
 Then refresh the browser tab. `new_note.py` takes a folder path from `tree.txt`, or just its last
-part when that is unique (`RHF`, `06_Reduced_Density_Matrices`). If the name appears in two places
+part when that is unique (`03_Hartree_Fock_Theory`, `06_Reduced_Density_Matrices`). If the name appears in two places
 it lists them and asks for the full path. Any folder page in the site shows the exact command to
 copy.
 
 You can also create the file by hand: save any `.md` file inside the right folder under `notes/`.
 The folder it sits in is the folder it is filed in.
 
-## The folder tree
+## The book structure
 
-`tree.txt` holds one folder per line, children indented by two spaces. Edit it to add, rename or
-reorder folders, then run `build.py`; it creates the matching folders under `notes/`.
-Leading numbers (`04_`) become the folder numbers in the site; unnumbered names sort where you put them.
+The notebook is arranged like a book with two folder levels:
+
+- **Parts:** the top-level folders, `04_Electronic_Structure_Theory` for example.
+- **Chapters:** the folders inside a part, `04_Electronic_Structure_Theory/03_Hartree_Fock_Theory` for example.
+- **Sections:** the notes inside a chapter.
+
+**Numbering.** The site numbers everything from the folder prefixes and the `order` field: Part 4, Chapter 4.3, Section 4.3.5. Every section has **Previous / Next** buttons that walk through the whole book in that order, crossing chapter boundaries. The sidebar is a table of contents, and expanding a chapter lists its sections.
+
+**Chapter introductions.** Each chapter has an `index.md` introduction: what the chapter covers, the path through its sections, what it needs and what it leads to, plus the planned sections still to be written. Keep it up to date when you add a section. Empty chapters are kept and shown as planned.
+
+**`tree.txt`** holds one folder per line, children indented by two spaces. Edit it to add, rename or
+reorder parts and chapters, then run `build.py`; it creates the matching folders under `notes/`.
+Leading numbers (`04_`) become the numbers in the site; unnumbered names sort where you put them.
 
 If you rename or move a folder that already contains notes, rename the same directory under
 `notes/` too (`git mv` keeps history). Notes in a directory that is not in `tree.txt` still appear;
@@ -69,8 +79,7 @@ two `---` lines is metadata:
 | `tags` | `[a, b]`. Searched, shown on the note. |
 | `prerequisites` | Notes to understand first, by id or title. Shown at the top of the note. |
 | `related` | Connected notes that are not prerequisites. |
-| `also` | Extra folders that should list this note (see below). |
-| `order` | Optional number; lower comes first inside a folder. Default: alphabetical by title. |
+| `order` | Position of the section inside its chapter (lower first). Use steps of 10 so a new section can be slotted in between. The template's 999 puts a new section at the end. Default: alphabetical by title. |
 | `date` | `YYYY-MM-DD`, optional. |
 | `authors`, `journal`, `year`, `doi` | For papers. |
 
@@ -108,21 +117,15 @@ Types: `example`, `note`, `warning`.
 Images and file links are relative to the note: `![diagram](rhf.png)` finds `rhf.png` next to the
 note. Keep `notes/` next to `index.html` when you move or publish the site.
 
-## Notes that belong in two folders
+## One note, one place
 
-Each note has **one home**: the folder its file sits in. Add `also: [folder/path]` to list it in
-other folders as well. There it appears marked **Shortcut**, with its home path, and clicking it
-opens the one real note. Nothing is duplicated, so there is only one page to keep correct.
+Each note lives in exactly one chapter: the folder its file sits in. There are no shortcuts or
+duplicate listings. To connect a note to another chapter, use `prerequisites`, `related` or
+`[[a link]]`. `build.py` warns if an old `also:` field is still present and ignores it.
 
-Rules of thumb:
-
-1. Use a shortcut only when the note really belongs to both areas. If you only want a reader of
-   folder B to find it, use `related` or `[[a link]]` instead.
-2. Choose the home by the most specific folder that fits (a Hartree-Fock derivation lives in
-   Hartree-Fock, with a shortcut from Quantum Chemistry, not the other way round).
-3. When the same subject appears in several top-level sections of the tree (VQE, embedding,
-   potential energy surfaces), split by role rather than copying: theory in one home, software
-   details in the software folder, and link them to each other.
+When the same subject turns up in several parts (VQE, embedding, potential energy surfaces), split it
+by role rather than copying: theory in one chapter, software details in the software chapter, and
+link the two.
 
 ## Look and feel
 
