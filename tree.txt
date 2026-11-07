@@ -64,6 +64,7 @@
       RHF
       UHF
       ROHF
+      GHF
       Fock_Operator
       SCF_Procedure
       Orbital_Optimization
