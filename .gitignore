@@ -1,0 +1,12 @@
+books/
+ESQC_2026/
+/Articles
+__pycache__/
+CLAUDE.md
+*.pyc
+# private research pages: stay on this machine
+notes/08_Research_and_Literature/04_Research_Projects/
+CLAUDE.md
+Claude_outputs/
+Claude outputs/
+__pycache__/

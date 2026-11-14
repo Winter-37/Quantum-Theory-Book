@@ -1,0 +1,2 @@
+# Folders (relative to notes/) kept out of `python3 build.py --public`, i.e. out of the committed index.html
+08_Research_and_Literature/04_Research_Projects

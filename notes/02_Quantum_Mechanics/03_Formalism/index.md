@@ -1,0 +1,1 @@
+The general structure behind Chapter 2: Hilbert space, Hermitian operators and their eigenfunctions, the generalized statistical interpretation, representations, and the uncertainty principles. Coherent states close the chapter as an application (Griffiths Ch. 3).
